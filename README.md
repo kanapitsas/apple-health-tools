@@ -2,6 +2,8 @@
 
 A collection of Python tools to extract, process, and visualize workout GPS data from Apple Health exports, creating interactive route maps and heatmaps of your activities.
 
+![](screenshot.png)
+
 ## Features
 
 - Extract GPS data from Apple Health workout route files (GPX format)
