@@ -1,4 +1,4 @@
-# Workout Route Heatmap Generator
+# Tools for Apple Health export
 
 A collection of Python tools to extract, process, and visualize workout GPS data from Apple Health exports, creating interactive route maps and heatmaps of your activities.
 
