@@ -109,15 +109,31 @@ def create_map(args):
 
     # Create base map
     print("Creating base map...")
-    center_lat = df['latitude'].iloc[-1]
-    center_lon = df['longitude'].iloc[-1]
+    center_lat = df['latitude'].mean()
+    center_lon = df['longitude'].mean()
+
+    # Create map with OpenTopoMap as base layer
     m = folium.Map(
         location=[center_lat, center_lon],
         zoom_start=12,
-        tiles='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-        attr='Map data: &copy; OpenTopoMap contributors',
-        name='OpenTopoMap'
+        tiles=None  # Start with no tiles to avoid duplicate base layer
     )
+
+    # Add both base layers
+    folium.TileLayer(
+        'OpenTopoMap',
+        name='OpenTopoMap',
+        attr='Map data: © OpenTopoMap contributors'
+    ).add_to(m)
+
+    folium.TileLayer(
+        'cartodbpositron',
+        name='CartoDB Simple',
+        attr='© CartoDB'
+    ).add_to(m)
+
+    # Add routes as a feature group
+    route_group = folium.FeatureGroup(name="Routes")
 
     # Process individual routes
     unique_files = df['filename'].unique()
@@ -134,18 +150,27 @@ def create_map(args):
                 weight=2,
                 color='blue',
                 opacity=0.6
-            ).add_to(m)
+            ).add_to(route_group)
 
-    # Create heatmap overlay
+    route_group.add_to(m)
+
+    # Create heatmap as a feature group
     print("Creating heatmap...")
+    heat_group = folium.FeatureGroup(name="Heatmap")
     simplified_df = simplify_route(df, sample_rate=args.heatmap_sample)
     heat_data = simplified_df[['latitude', 'longitude']].values.tolist()
+
     plugins.HeatMap(
         heat_data,
         min_opacity=args.opacity,
         radius=args.radius,
         blur=args.blur,
-    ).add_to(m)
+    ).add_to(heat_group)
+
+    heat_group.add_to(m)
+
+    # Add layer control
+    folium.LayerControl().add_to(m)
 
     # Save the map
     print(f"Saving map to {args.output}...")
