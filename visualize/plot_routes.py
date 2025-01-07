@@ -108,18 +108,19 @@ def create_map(args):
     df = pd.read_csv(args.input)
 
     # Create base map
-    print("Creating map...")
-    center_lat = df['latitude'].mean()
-    center_lon = df['longitude'].mean()
+    print("Creating base map...")
+    center_lat = df['latitude'].iloc[-1]
+    center_lon = df['longitude'].iloc[-1]
     m = folium.Map(
         location=[center_lat, center_lon],
         zoom_start=12,
-        tiles='CartoDB positron'
+        tiles='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        attr='Map data: &copy; OpenTopoMap contributors',
+        name='OpenTopoMap'
     )
 
     # Process individual routes
     unique_files = df['filename'].unique()
-    print("Processing routes...")
     for filename in tqdm(unique_files, desc="Processing routes"):
         route = df[df['filename'] == filename]
         route = simplify_route(route, sample_rate=args.sample_rate)

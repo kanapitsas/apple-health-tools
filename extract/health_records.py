@@ -8,13 +8,13 @@ and convert any specific metric to a CSV file.
 
 Typical usage:
     # List all available metrics
-    python health_export.py --list
+    python health_records.py --list
 
     # Export heart rate data
-    python health_export.py --type HKQuantityTypeIdentifierHeartRate --output heartrate.csv
+    python health_records.py --type HKQuantityTypeIdentifierHeartRate --output heartrate.csv
 
     # Export steps with default output filename
-    python health_export.py --type HKQuantityTypeIdentifierStepCount
+    python health_records.py --type HKQuantityTypeIdentifierStepCount
 """
 
 import xml.etree.ElementTree as ET
